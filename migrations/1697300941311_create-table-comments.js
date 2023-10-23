@@ -9,6 +9,8 @@ exports.up = (pgm) => {
     thread_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: '"threads"',
+      onDelete: 'cascade',
     },
     content: {
       type: 'TEXT',
@@ -17,6 +19,8 @@ exports.up = (pgm) => {
     owner: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: '"users"',
+      onDelete: 'cascade',
     },
     is_delete: {
       type: 'INTEGER',

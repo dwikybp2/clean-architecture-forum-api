@@ -1,4 +1,5 @@
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AddThread = require('../../../Domains/threads/entities/AddThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const pool = require('../../database/postgres/pool');
@@ -6,11 +7,16 @@ const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ThreadRepositoryPostgres', () => {
+  beforeAll(async () => {
+    await UsersTableTestHelper.addUser({});
+  });
+
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
+    await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 

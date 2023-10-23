@@ -1,4 +1,7 @@
 const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 const AddReply = require('../../../Domains/replies/entities/AddReply');
@@ -7,11 +10,18 @@ const pool = require('../../database/postgres/pool');
 const ReplyRepositoryPostgres = require('../ReplyRepositoryPostgres');
 
 describe('ReplyRepositoryPostgres', () => {
+  beforeAll(async () => {
+    await UsersTableTestHelper.addUser({});
+    await ThreadsTableTestHelper.addThread({});
+    await CommentsTableTestHelper.addComment({});
+  });
+
   afterEach(async () => {
     await RepliesTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
+    await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 
@@ -81,10 +91,10 @@ describe('ReplyRepositoryPostgres', () => {
     });
 
     it('should not throw AuthorizationError when correct reply owner', async () => {
-      await RepliesTableTestHelper.addReply({ id: 'reply-123', owner: 'user-321' });
+      await RepliesTableTestHelper.addReply({ id: 'reply-123', owner: 'user-123' });
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
-      await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'user-321')).resolves.not.toThrowError(AuthorizationError);
+      await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'user-123')).resolves.not.toThrowError(AuthorizationError);
     });
   });
 
