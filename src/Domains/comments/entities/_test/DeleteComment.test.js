@@ -32,5 +32,6 @@ describe('DeleteComment entities', () => {
     expect(deleteComment.threadId).toEqual(payload.threadId);
     expect(deleteComment.commentId).toEqual(payload.commentId);
     expect(deleteComment.userId).toEqual(payload.userId);
+    expect(deleteComment.status).toEqual(1);
   });
 });

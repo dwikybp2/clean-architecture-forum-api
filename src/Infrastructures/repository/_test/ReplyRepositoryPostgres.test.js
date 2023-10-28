@@ -37,6 +37,10 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       await expect(replyRepositoryPostgres.findReplyById('reply-123')).resolves.not.toThrowError(NotFoundError);
+
+      const reply = await replyRepositoryPostgres.findReplyById('reply-123');
+      expect(reply).toHaveLength(1);
+      expect(reply[0].id).toBe('reply-123');
     });
   });
 
@@ -58,6 +62,11 @@ describe('ReplyRepositoryPostgres', () => {
         content: 'balasan komentar',
         owner: 'user-123',
       }));
+
+      const reply = await RepliesTableTestHelper.findReplyById('reply-123');
+
+      expect(reply).toHaveLength(1);
+      expect(reply[0].id).toBe(addedReply.id);
     });
   });
 
@@ -73,6 +82,11 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       await expect(replyRepositoryPostgres.deleteReplyById('reply-123')).resolves.not.toThrowError(NotFoundError);
+
+      const reply = await RepliesTableTestHelper.findReplyById('reply-123');
+
+      expect(reply).toHaveLength(1);
+      expect(reply[0].is_delete).toBe(1);
     });
   });
 
@@ -104,6 +118,10 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       await expect(replyRepositoryPostgres.findReplyByCommentId('comment-123')).resolves.not.toThrowError(NotFoundError);
+
+      const reply = await replyRepositoryPostgres.findReplyByCommentId('comment-123');
+      expect(reply).toHaveLength(1);
+      expect(reply[0].id).toBe('reply-123');
     });
   });
 });

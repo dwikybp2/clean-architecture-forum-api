@@ -37,6 +37,19 @@ const CommentsTableTestHelper = {
     return result.rows;
   },
 
+  async verifyCommentAvailability(id) {
+    const query = {
+      text: 'SELECT id FROM comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Komentar tidak ditemukan');
+    }
+  },
+
   async cleanTable() {
     await pool.query('DELETE FROM comments WHERE 1=1');
   },

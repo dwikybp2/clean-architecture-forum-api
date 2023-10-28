@@ -5,7 +5,7 @@ class DeleteComment {
     this.threadId = payload.threadId;
     this.commentId = payload.commentId;
     this.userId = payload.userId;
-    this.status = 0;
+    this.status = 1;
   }
 
   _verifyPayload(payload) {

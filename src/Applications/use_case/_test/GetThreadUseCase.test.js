@@ -54,14 +54,14 @@ describe('GetThreadUseCase', () => {
         id: 'reply-123',
         content: 'balasan komentar netijen',
         date: '2023-10-20T03:15:19.321Z',
-        username: 'dicoding',
+        username: 'dwiky',
         isDelete: 1,
       },
       {
-        id: 'reply-123',
+        id: 'reply-1234',
         content: 'balasan komentar netijen',
         date: '2023-10-20T03:15:19.321Z',
-        username: 'dicoding',
+        username: 'dwiky',
         isDelete: 0,
       },
     ];
@@ -72,7 +72,7 @@ describe('GetThreadUseCase', () => {
       body: 'body12342',
       owner: 'user-123',
       date: '2023-10-20T03:07:44.419Z',
-      username: 'dicoding',
+      username: 'dwiky',
     };
 
     mockThreadRepository.findThreadById = jest.fn()
@@ -90,15 +90,39 @@ describe('GetThreadUseCase', () => {
 
     const thread = await getThreadUseCase.execute(useCasePayload);
 
-    const expectedMappedComments = comments.map((com) => ({
-      ...com,
-      content: com.isDelete === 1 ? '**komentar telah dihapus**' : com.content,
-    }));
+    const expectedMappedComments = [
+      {
+        id: 'comment-1w',
+        username: 'dwiky',
+        date: '2023-10-20T03:07:44.419Z',
+        content: '**komentar telah dihapus**',
+        isDelete: 1,
+      },
+      {
+        id: 'comment-223',
+        username: 'dwiky',
+        date: '2023-10-20T03:07:44.419Z',
+        content: '222komentarr netijeeen',
+        isDelete: 0,
+      },
+    ];
 
-    const expectedMappedReplies = mockFindReply.map((com) => ({
-      ...com,
-      content: com.isDelete === 1 ? '**balasan telah dihapus**' : com.content,
-    }));
+    const expectedMappedReplies = [
+      {
+        id: 'reply-123',
+        content: '**balasan telah dihapus**',
+        date: '2023-10-20T03:15:19.321Z',
+        username: 'dwiky',
+        isDelete: 1,
+      },
+      {
+        id: 'reply-1234',
+        content: 'balasan komentar netijen',
+        date: '2023-10-20T03:15:19.321Z',
+        username: 'dwiky',
+        isDelete: 0,
+      },
+    ];
 
     expect(mockThreadRepository.findThreadById)
       .toHaveBeenCalledWith(useCasePayload.threadId);
@@ -114,6 +138,63 @@ describe('GetThreadUseCase', () => {
 
     expect(thread.comments[0].replies[0].content).toEqual(expectedMappedReplies[0].content);
     expect(thread.comments[0].replies[1].content).toEqual(expectedMappedReplies[1].content);
+
+    expect(thread).toStrictEqual({
+      id: 'thread-123',
+      title: 'title132',
+      body: 'body12342',
+      owner: 'user-123',
+      date: '2023-10-20T03:07:44.419Z',
+      username: 'dwiky',
+      comments: [
+        {
+          id: 'comment-1w',
+          username: 'dwiky',
+          date: '2023-10-20T03:07:44.419Z',
+          content: '**komentar telah dihapus**',
+          isDelete: 1,
+          replies: [
+            {
+              id: 'reply-123',
+              content: '**balasan telah dihapus**',
+              date: '2023-10-20T03:15:19.321Z',
+              username: 'dwiky',
+              isDelete: 1,
+            },
+            {
+              id: 'reply-1234',
+              content: 'balasan komentar netijen',
+              date: '2023-10-20T03:15:19.321Z',
+              username: 'dwiky',
+              isDelete: 0,
+            },
+          ],
+        },
+        {
+          id: 'comment-223',
+          username: 'dwiky',
+          date: '2023-10-20T03:07:44.419Z',
+          content: '222komentarr netijeeen',
+          isDelete: 0,
+          replies: [
+            {
+              id: 'reply-123',
+              content: '**balasan telah dihapus**',
+              date: '2023-10-20T03:15:19.321Z',
+              username: 'dwiky',
+              isDelete: 1,
+            },
+            {
+              id: 'reply-1234',
+              content: 'balasan komentar netijen',
+              date: '2023-10-20T03:15:19.321Z',
+              username: 'dwiky',
+              isDelete: 0,
+            },
+          ],
+        },
+      ],
+    });
   });
 
   it('should orchestrating get thread action correctly with empty comments', async () => {
@@ -167,5 +248,14 @@ describe('GetThreadUseCase', () => {
       .toHaveBeenCalledWith(useCasePayload.threadId);
 
     expect(thread.comments.length).toEqual(0);
+    expect(thread).toStrictEqual({
+      id: 'thread-123',
+      title: 'title132',
+      body: 'body12342',
+      owner: 'user-123',
+      date: '2023-10-20T03:07:44.419Z',
+      username: 'dicoding',
+      comments: [],
+    });
   });
 });

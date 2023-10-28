@@ -35,6 +35,10 @@ describe('CommentRepositoryPostgres', () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       await expect(commentRepositoryPostgres.findCommentById('comment-123')).resolves.not.toThrowError(NotFoundError);
+
+      const comment = await commentRepositoryPostgres.findCommentById('comment-123');
+      expect(comment).toHaveLength(1);
+      expect(comment[0].id).toBe('comment-123');
     });
   });
 
@@ -56,6 +60,11 @@ describe('CommentRepositoryPostgres', () => {
         content: 'komentarrrr',
         owner: 'user-123',
       }));
+
+      const comment = await CommentsTableTestHelper.findCommentById('comment-123');
+
+      expect(comment).toHaveLength(1);
+      expect(comment[0].id).toBe(addedComment.id);
     });
   });
 
@@ -71,6 +80,11 @@ describe('CommentRepositoryPostgres', () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       await expect(commentRepositoryPostgres.deleteCommentById('comment-123')).resolves.not.toThrowError(NotFoundError);
+
+      const comment = await CommentsTableTestHelper.findCommentById('comment-123');
+
+      expect(comment).toHaveLength(1);
+      expect(comment[0].is_delete).toBe(1);
     });
   });
 
@@ -102,6 +116,30 @@ describe('CommentRepositoryPostgres', () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       await expect(commentRepositoryPostgres.findCommentByThreadId('thread-123')).resolves.not.toThrowError(NotFoundError);
+
+      const comment = await commentRepositoryPostgres.findCommentByThreadId('thread-123');
+      expect(comment).toHaveLength(1);
+      expect(comment[0].id).toBe('comment-123');
+    });
+  });
+
+  describe('verifyCommentAvailability function', () => {
+    it('should throw NotFoundError when comment not found', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      await expect(commentRepositoryPostgres.verifyCommentAvailability('comment-123')).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when comment available', async () => {
+      const addComment = new AddComment({
+        threadId: 'thread-123',
+        content: 'komentarrrr',
+        owner: 'user-123',
+      });
+      await CommentsTableTestHelper.addComment(addComment);
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      await expect(commentRepositoryPostgres.verifyCommentAvailability('comment-123')).resolves.not.toThrowError(NotFoundError);
     });
   });
 });
