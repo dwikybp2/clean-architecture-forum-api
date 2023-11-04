@@ -13,6 +13,7 @@ class GetThreadUseCase {
 
     const mapComments = comments.map((com) => ({
       ...com,
+      likeCount: parseInt(com.likeCount, 10),
       content: com.isDelete === 1 ? '**komentar telah dihapus**' : com.content,
     }));
 

@@ -20,6 +20,8 @@ const CommentRepository = require('../Domains/comments/CommentRepository');
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
 const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
+const CommentLikesRepository = require('../Domains/commentLikes/CommentLikesRepository');
+const CommentLikesRepositoryPostgres = require('./repository/CommentLikesRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
@@ -36,6 +38,7 @@ const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseC
 const GetThreadUseCase = require('../Applications/use_case/GetThreadUseCase');
 const AddReplyUseCase = require('../Applications/use_case/AddReplyUseCase');
 const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
+const EditCommentLikesUseCase = require('../Applications/use_case/EditCommentLikesUseCase');
 
 // creating container
 const container = createContainer();
@@ -120,6 +123,20 @@ container.register([
   {
     key: ReplyRepository.name,
     Class: ReplyRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: CommentLikesRepository.name,
+    Class: CommentLikesRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -301,6 +318,27 @@ container.register([
         {
           name: 'replyRepository',
           internal: ReplyRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: EditCommentLikesUseCase.name,
+    Class: EditCommentLikesUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'commentLikesRepository',
+          internal: CommentLikesRepository.name,
         },
       ],
     },
