@@ -34,6 +34,7 @@ describe('GetThreadUseCase', () => {
         date: '2023-10-20T03:07:44.419Z',
         content: 'komentarr netijeeen',
         isDelete: 1,
+        likeCount: 2,
       },
       {
         id: 'comment-223',
@@ -41,6 +42,7 @@ describe('GetThreadUseCase', () => {
         date: '2023-10-20T03:07:44.419Z',
         content: '222komentarr netijeeen',
         isDelete: 0,
+        likeCount: 3,
       },
     ];
 
@@ -97,6 +99,7 @@ describe('GetThreadUseCase', () => {
         date: '2023-10-20T03:07:44.419Z',
         content: '**komentar telah dihapus**',
         isDelete: 1,
+        likeCount: 2,
       },
       {
         id: 'comment-223',
@@ -104,6 +107,7 @@ describe('GetThreadUseCase', () => {
         date: '2023-10-20T03:07:44.419Z',
         content: '222komentarr netijeeen',
         isDelete: 0,
+        likeCount: 3,
       },
     ];
 
@@ -153,6 +157,7 @@ describe('GetThreadUseCase', () => {
           date: '2023-10-20T03:07:44.419Z',
           content: '**komentar telah dihapus**',
           isDelete: 1,
+          likeCount: 2,
           replies: [
             {
               id: 'reply-123',
@@ -176,6 +181,7 @@ describe('GetThreadUseCase', () => {
           date: '2023-10-20T03:07:44.419Z',
           content: '222komentarr netijeeen',
           isDelete: 0,
+          likeCount: 3,
           replies: [
             {
               id: 'reply-123',
